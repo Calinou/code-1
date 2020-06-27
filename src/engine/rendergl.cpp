@@ -736,7 +736,7 @@ int farplane;
 VARP(zoominvel, 0, 250, 5000);
 VARP(zoomoutvel, 0, 100, 5000);
 VARP(zoomfov, 10, 35, 60);
-VARP(fov, 10, 100, 150);
+VARP(fov, 10, 75, 150);
 VAR(avatarzoomfov, 10, 25, 60);
 VAR(avatarfov, 10, 65, 150);
 FVAR(avatardepth, 0, 0.5f, 1);
@@ -1869,8 +1869,7 @@ void gl_drawframe()
 
     int w = screenw, h = screenh;
     aspect = forceaspect ? forceaspect : w/float(h);
-    fovy = 2*atan2(tan(curfov/2*RAD), aspect)/RAD;
-    
+
     int fogmat = lookupmaterial(camera1->o)&(MATF_VOLUME|MATF_INDEX), abovemat = MAT_AIR;
     float fogblend = 1.0f, causticspass = 0.0f;
     if(isliquid(fogmat&MATF_VOLUME))
@@ -1886,13 +1885,13 @@ void gl_drawframe()
     if(fogmat!=MAT_AIR)
     {
         float blend = abovemat==MAT_AIR ? fogblend : 1.0f;
-        fovy += blend*sinf(lastmillis/1000.0)*2.0f;
+        fov += blend*sinf(lastmillis/1000.0)*2.0f;
         aspect += blend*sinf(lastmillis/1000.0+M_PI)*0.1f;
     }
 
     farplane = worldsize*2;
 
-    projmatrix.perspective(fovy, aspect, nearplane, farplane);
+    projmatrix.perspective(fov, aspect, nearplane, farplane);
     setcamprojmatrix();
 
     glEnable(GL_CULL_FACE);
